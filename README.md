@@ -1,5 +1,8 @@
 # WalletWise
 
+[![CI — Lint & Type Check](https://github.com/swaraj235/WalletWise/actions/workflows/ci.yml/badge.svg)](https://github.com/swaraj235/WalletWise/actions/workflows/ci.yml)
+[![CD — EAS Preview Build](https://github.com/swaraj235/WalletWise/actions/workflows/eas-build.yml/badge.svg)](https://github.com/swaraj235/WalletWise/actions/workflows/eas-build.yml)
+
 WalletWise is an intelligent, React Native / Expo mobile application designed to optimize your credit card rewards. Using an on-device recommendation engine built on open data for 280 Indian cards, and location-based mapping (via Mapbox), WalletWise recommends the best card to use for any given purchase based on your specific location or merchant category, maximizing your cashback and points.
 
 ## Features
