@@ -523,7 +523,8 @@ const styles = StyleSheet.create({
     top: 0, left: 0, right: 0, bottom: 0,
     opacity: 0.02,
     backgroundColor: 'transparent',
-    backgroundImage: 'linear-gradient(rgba(245, 208, 111, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 208, 111, 0.5) 1px, transparent 1px)',
+    // @ts-ignore - web gradient styling
+    backgroundImage: 'linear-gradient(rgba(245, 208, 111, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 208, 111, 0.5) 1px, transparent 1px)' as any,
     backgroundSize: '20px 20px',
   },
   scrollContent: {
