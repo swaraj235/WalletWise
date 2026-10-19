@@ -2,8 +2,8 @@ name: CD — EAS Preview Build
 
 on:
   push:
-    branches: [main]         # Only triggers on merge to main
-  workflow_dispatch:          # Allows manual trigger from GitHub UI
+    branches: [main, "fix/**"]   # Triggers on main and fix branches
+  workflow_dispatch:            # Allows manual trigger from GitHub UI
 
 jobs:
   build-android-preview:
@@ -30,4 +30,4 @@ jobs:
         run: npm ci
 
       - name: Build Android Preview APK
-        run: eas build --platform android --profile preview --non-interactive
+        run: eas build --platform android --profile preview --non-interactive --no-wait

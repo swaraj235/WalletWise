@@ -14,20 +14,18 @@ export function WalletWiseIntro({ onFinish }: WalletWiseIntroProps) {
   });
 
   useEffect(() => {
-    // If the video hangs or errors, this will ensure the app still opens
+    // If the video hangs or errors, fallback quickly so the app opens immediately
     let safetyTimeout = setTimeout(() => {
-      console.log('Intro safety timeout triggered (15s fallback)');
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync().catch(() => {});
       onFinish();
-    }, 15000);
+    }, 2500);
 
     return () => clearTimeout(safetyTimeout);
   }, [onFinish]);
 
   useEventListener(player, 'statusChange', (payload) => {
     if (payload.status === 'error') {
-      console.log('Video Player Error:', payload.error);
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync().catch(() => {});
       onFinish();
     }
   });
@@ -35,13 +33,13 @@ export function WalletWiseIntro({ onFinish }: WalletWiseIntroProps) {
   // Ensure the splash screen only hides when the very first frame of the video paints
   useEventListener(player, 'timeUpdate', (payload) => {
     if (payload.currentTime > 0.05) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync().catch(() => {});
     }
   });
 
   useEventListener(player, 'playingChange', ({ isPlaying }) => {
     if (!isPlaying && player.currentTime > 0.5) {
-      console.log('Video finished cleanly (playingChange)');
+      SplashScreen.hideAsync().catch(() => {});
       onFinish();
     }
   });

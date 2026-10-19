@@ -7,26 +7,41 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { WalletWiseIntro } from '../components/WalletWiseIntro';
 
 // Keep the native splash screen visible until our React hierarchy mounts
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => {});
+
+class IntroErrorBoundary extends React.Component<{ onFinish: () => void; children: React.ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: any) {
+    console.warn('Intro video error caught by boundary:', error);
+    SplashScreen.hideAsync().catch(() => {});
+    this.props.onFinish();
+  }
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
 
 export default function RootLayout() {
   const [isIntroFinished, setIsIntroFinished] = useState(false);
 
   useEffect(() => {
-    // We will hide the splash screen inside WalletWiseIntro once the video is ready
+    // Failsafe: hide splash screen within 1.5s regardless of video status
+    const timer = setTimeout(() => {
+      SplashScreen.hideAsync().catch(() => {});
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleIntroFinish = () => {
+    SplashScreen.hideAsync().catch(() => {});
     setIsIntroFinished(true);
   };
 
-  // If intro hasn't been finished/seen, return ONLY the intro component
-  // This explicitly blocks the Stack (and Home screen) from rendering/mounting
-  if (!isIntroFinished) {
-    return <WalletWiseIntro onFinish={handleIntroFinish} />;
-  }
-
-  // Once finished, mount the actual application routing
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false, gestureEnabled: true }}>
@@ -37,6 +52,12 @@ export default function RootLayout() {
         <Stack.Screen name="find-card" options={{ headerShown: false }} />
         <Stack.Screen name="trip-planner" options={{ headerShown: false }} />
       </Stack>
+      {!isIntroFinished && (
+        <IntroErrorBoundary onFinish={handleIntroFinish}>
+          <WalletWiseIntro onFinish={handleIntroFinish} />
+        </IntroErrorBoundary>
+      )}
     </GestureHandlerRootView>
   );
 }
+
